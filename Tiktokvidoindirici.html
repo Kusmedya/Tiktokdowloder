@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuş Medya - TikTok HD Filigransız Video İndirici</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 30px 20px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .logo {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        h1 {
+            font-size: 1.6rem;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+        }
+        button.btn-get {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background-color: #0284c7;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button.btn-get:hover {
+            background-color: #0369a1;
+        }
+        
+        /* Önizleme Alanı */
+        #resultContainer {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .video-wrapper {
+            width: 100%;
+            max-height: 380px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            max-height: 380px;
+            object-fit: contain;
+        }
+        .author-info {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .btn-download {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #10b981;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        .btn-download:hover {
+            background-color: #059669;
+        }
+        .loading {
+            display: none;
+            color: #38bdf8;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        .error {
+            display: none;
+            color: #f87171;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">🦅</div>
+    <h1>Kuş Medya</h1>
+    <p class="subtitle">TikTok Filigransız HD Video İndirici</p>
+
+    <div class="input-group">
+        <input type="text" id="videoUrl" placeholder="TikTok Video Bağlantısını Yapıştırın..." autocomplete="off">
+        <button class="btn-get" onclick="fetchTikTokVideo()">Videoyu Getir</button>
+    </div>
+
+    <div id="loading" class="loading">⏳ Video hazırlanıyor, lütfen bekleyin...</div>
+    <div id="error" class="error"></div>
+
+    <!-- Sonuç & Önizleme Alanı -->
+    <div id="resultContainer">
+        <div id="author" class="author-info"></div>
+        <div class="video-wrapper">
+            <video id="videoPreview" controls preload="metadata"></video>
+        </div>
+        <a id="downloadBtn" class="btn-download" href="#" target="_blank" download="kus-medya-tiktok.mp4">
+            💾 Filigransız HD Videoyu İndir
+        </a>
+    </div>
+</div>
+
+<script>
+    async function fetchTikTokVideo() {
+        const inputUrl = document.getElementById('videoUrl').value.trim();
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const resultContainer = document.getElementById('resultContainer');
+        const videoPreview = document.getElementById('videoPreview');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const author = document.getElementById('author');
+
+        if (!inputUrl) {
+            error.innerText = 'Lütfen geçerli bir TikTok bağlantısı girin.';
+            error.style.display = 'block';
+            return;
+        }
+
+        // Reset
+        error.style.display = 'none';
+        resultContainer.style.display = 'none';
+        loading.style.display = 'block';
+
+        try {
+            // Ücretsiz TikWM Public API Entegrasyonu
+            const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(inputUrl)}`);
+            const resData = await response.json();
+
+            loading.style.display = 'none';
+
+            if (resData.code === 0) {
+                const data = resData.data;
+                
+                // Video & Yazar Bilgileri
+                author.innerText = `@${data.author.unique_id} - ${data.title || 'TikTok Video'}`;
+                
+                // Filigransız HD Video Bağlantısı
+                const cleanVideoUrl = data.play; 
+                
+                // Önizleme ayarla
+                videoPreview.src = cleanVideoUrl;
+                downloadBtn.href = cleanVideoUrl;
+
+                // Göster
+                resultContainer.style.display = 'flex';
+            } else {
+                error.innerText = 'Video bulunamadı veya bağlantı geçersiz. Lütfen tekrar deneyin.';
+                error.style.display = 'block';
+            }
+        } catch (err) {
+            loading.style.display = 'none';
+            error.innerText = 'Bir hata oluştu, lütfen internet bağlantınızı veya linki kontrol edin.';
+            error.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
